@@ -1,11 +1,11 @@
-BUILD_ID=DONTKILLME #后台执行
+BUILD_ID=DONTKILLME 
 
 pid=$(ps -ef|grep demo.jar|grep -v grep | awk '{print $2}')
 
-#copy jar 到启动目录
+
 cp -r /var/lib/jenkins/workspace/demo/demo/target/demo.jar  /home/jar/demo
 
-# 关闭已经启动的jar进程
+
 function stop(){
 if [ -n "$pid" ]
   then
