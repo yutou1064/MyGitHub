@@ -1,0 +1,23 @@
+pipeline {
+   agent any
+
+   stages {
+       stage('checkout') {
+         steps {
+             git credentialsId: 'e78be5a2-382f-4ff8-b14d-b27ce27b44e4', url: 'http://192.168.22.60/rao/rao-ms-service.git'
+           }
+      }
+      stage('compile') {
+         steps {
+            withMaven(globalMavenSettingsFilePath: '/usr/local/maven/apache-maven-3.6.3/conf/settings.xml', jdk: 'MyJDK', maven: 'MyMaven', mavenLocalRepo: '/usr/local/maven_repository', mavenSettingsFilePath: '/usr/local/maven/apache-maven-3.6.3/conf/settings.xml') {
+                sh "mvn clean test package surefire-report:report-only"
+           }
+         }
+      }
+      stage('deploy') {
+         steps {
+             deploy adapters: [tomcat9(credentialsId: '23164efa-84e3-4c42-a1ea-f56ca4dae188', path: '', url: 'http://192.168.22.60:8888')], contextPath: 'rao/v1', war: 'target\\rao-ms-service.war'
+           }
+      }
+   }
+}
